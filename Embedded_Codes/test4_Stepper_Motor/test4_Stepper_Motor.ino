@@ -37,8 +37,10 @@ void setup() {
   motorY.setCurrentPosition(0);
 
   Serial.println("CoreXY Multi-Step Control Ready:");
-  Serial.println("Send 8, 88, 888 ... up to 10 chars for multiplied steps.");
-  Serial.println("Send '1' to turn Relay ON, '0' to turn Relay OFF.");
+  Serial.println("Direction Keys (Numpad):");
+  Serial.println("  8: Up    | 2: Down  | 6: Right | 4: Left");
+  Serial.println("  9: Up-R  | 7: Up-L  | 3: Down-R| 1: Down-L");
+  Serial.println("Send 'R' to turn Relay ON, 'r' to turn Relay OFF.");
 }
 
 void loop() {
@@ -61,6 +63,7 @@ void loop() {
       long totalDistance = (long)BASE_STEP_DISTANCE * count;
 
       switch (key) {
+        // --- حرکت‌های اصلی (ارتوگونال) ---
         case '8': // حرکت به بالا (Y+)
           motorX.move(-totalDistance);
           motorY.move(totalDistance);
@@ -81,13 +84,37 @@ void loop() {
           motorY.move(totalDistance);
           break;
 
-        // کنترل معکوس‌شده برای ماژول Active-Low
-        case '1': // روشن کردن رله
-          digitalWrite(RELAY_PIN, LOW); // ارسال LOW برای روشن شدن
+        // --- حرکت‌های مورب (قطری) ---
+        case '9': // بالا-راست (X+ , Y+)
+          motorX.move(-totalDistance);
+          motorY.move(0);
+          break;
+
+        case '7': // بالا-چپ (X- , Y+)
+          motorX.move(0);
+          motorY.move(totalDistance);
+          break;
+
+        case '3': // پایین-راست (X+ , Y-)
+          motorX.move(0);
+          motorY.move(-totalDistance);
+          break;
+
+        case '1': // پایین-چپ (X- , Y-)
+          motorX.move(totalDistance);
+          motorY.move(0);
+          break;
+
+        // --- کنترل رله ---
+        case 'R': 
+        case 'r': // روشن کردن رله (کلید R یا r)
+          digitalWrite(RELAY_PIN, LOW); // ارسال LOW برای روشن شدن (Active-Low)
           Serial.println("Relay activated (ON)");
           break;
 
-        case '0': // خاموش کردن رله
+        case 'O':
+        case 'o': 
+        case '0': // خاموش کردن رله (کلید 0 یا O)
           digitalWrite(RELAY_PIN, HIGH); // ارسال HIGH برای خاموش شدن
           Serial.println("Relay deactivated (OFF)");
           break;

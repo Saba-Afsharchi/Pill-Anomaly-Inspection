@@ -1,0 +1,427 @@
+[
+  {
+    "row": 1,
+    "col": 1,
+    "detected": true,
+    "cell_xyxy": [
+      253,
+      123,
+      291,
+      161
+    ],
+    "crop_xyxy": [
+      255,
+      131,
+      277,
+      153
+    ]
+  },
+  {
+    "row": 1,
+    "col": 2,
+    "detected": true,
+    "cell_xyxy": [
+      291,
+      123,
+      330,
+      161
+    ],
+    "crop_xyxy": [
+      302,
+      132,
+      320,
+      150
+    ]
+  },
+  {
+    "row": 1,
+    "col": 3,
+    "detected": true,
+    "cell_xyxy": [
+      330,
+      123,
+      368,
+      161
+    ],
+    "crop_xyxy": [
+      339,
+      131,
+      357,
+      149
+    ]
+  },
+  {
+    "row": 1,
+    "col": 4,
+    "detected": true,
+    "cell_xyxy": [
+      368,
+      123,
+      407,
+      161
+    ],
+    "crop_xyxy": [
+      380,
+      131,
+      402,
+      153
+    ]
+  },
+  {
+    "row": 1,
+    "col": 5,
+    "detected": true,
+    "cell_xyxy": [
+      407,
+      123,
+      445,
+      161
+    ],
+    "crop_xyxy": [
+      421,
+      129,
+      443,
+      151
+    ]
+  },
+  {
+    "row": 2,
+    "col": 1,
+    "detected": true,
+    "cell_xyxy": [
+      253,
+      161,
+      291,
+      200
+    ],
+    "crop_xyxy": [
+      261,
+      168,
+      283,
+      190
+    ]
+  },
+  {
+    "row": 2,
+    "col": 2,
+    "detected": true,
+    "cell_xyxy": [
+      291,
+      161,
+      330,
+      200
+    ],
+    "crop_xyxy": [
+      301,
+      172,
+      323,
+      194
+    ]
+  },
+  {
+    "row": 2,
+    "col": 3,
+    "detected": true,
+    "cell_xyxy": [
+      330,
+      161,
+      368,
+      200
+    ],
+    "crop_xyxy": [
+      340,
+      174,
+      360,
+      194
+    ]
+  },
+  {
+    "row": 2,
+    "col": 4,
+    "detected": true,
+    "cell_xyxy": [
+      368,
+      161,
+      407,
+      200
+    ],
+    "crop_xyxy": [
+      379,
+      170,
+      401,
+      192
+    ]
+  },
+  {
+    "row": 2,
+    "col": 5,
+    "detected": true,
+    "cell_xyxy": [
+      407,
+      161,
+      445,
+      200
+    ],
+    "crop_xyxy": [
+      421,
+      168,
+      443,
+      190
+    ]
+  },
+  {
+    "row": 3,
+    "col": 1,
+    "detected": true,
+    "cell_xyxy": [
+      253,
+      200,
+      291,
+      238
+    ],
+    "crop_xyxy": [
+      263,
+      210,
+      285,
+      232
+    ]
+  },
+  {
+    "row": 3,
+    "col": 2,
+    "detected": true,
+    "cell_xyxy": [
+      291,
+      200,
+      330,
+      238
+    ],
+    "crop_xyxy": [
+      299,
+      207,
+      321,
+      229
+    ]
+  },
+  {
+    "row": 3,
+    "col": 3,
+    "detected": true,
+    "cell_xyxy": [
+      330,
+      200,
+      368,
+      238
+    ],
+    "crop_xyxy": [
+      339,
+      209,
+      361,
+      231
+    ]
+  },
+  {
+    "row": 3,
+    "col": 4,
+    "detected": true,
+    "cell_xyxy": [
+      368,
+      200,
+      407,
+      238
+    ],
+    "crop_xyxy": [
+      376,
+      209,
+      398,
+      231
+    ]
+  },
+  {
+    "row": 3,
+    "col": 5,
+    "detected": true,
+    "cell_xyxy": [
+      407,
+      200,
+      445,
+      238
+    ],
+    "crop_xyxy": [
+      424,
+      206,
+      442,
+      224
+    ]
+  },
+  {
+    "row": 4,
+    "col": 1,
+    "detected": true,
+    "cell_xyxy": [
+      253,
+      238,
+      291,
+      277
+    ],
+    "crop_xyxy": [
+      265,
+      253,
+      281,
+      269
+    ]
+  },
+  {
+    "row": 4,
+    "col": 2,
+    "detected": true,
+    "cell_xyxy": [
+      291,
+      238,
+      330,
+      277
+    ],
+    "crop_xyxy": [
+      304,
+      249,
+      326,
+      271
+    ]
+  },
+  {
+    "row": 4,
+    "col": 3,
+    "detected": true,
+    "cell_xyxy": [
+      330,
+      238,
+      368,
+      277
+    ],
+    "crop_xyxy": [
+      345,
+      250,
+      365,
+      270
+    ]
+  },
+  {
+    "row": 4,
+    "col": 4,
+    "detected": true,
+    "cell_xyxy": [
+      368,
+      238,
+      407,
+      277
+    ],
+    "crop_xyxy": [
+      379,
+      244,
+      399,
+      264
+    ]
+  },
+  {
+    "row": 4,
+    "col": 5,
+    "detected": true,
+    "cell_xyxy": [
+      407,
+      238,
+      445,
+      277
+    ],
+    "crop_xyxy": [
+      424,
+      247,
+      444,
+      267
+    ]
+  },
+  {
+    "row": 5,
+    "col": 1,
+    "detected": true,
+    "cell_xyxy": [
+      253,
+      277,
+      291,
+      315
+    ],
+    "crop_xyxy": [
+      264,
+      290,
+      286,
+      312
+    ]
+  },
+  {
+    "row": 5,
+    "col": 2,
+    "detected": true,
+    "cell_xyxy": [
+      291,
+      277,
+      330,
+      315
+    ],
+    "crop_xyxy": [
+      304,
+      290,
+      326,
+      312
+    ]
+  },
+  {
+    "row": 5,
+    "col": 3,
+    "detected": true,
+    "cell_xyxy": [
+      330,
+      277,
+      368,
+      315
+    ],
+    "crop_xyxy": [
+      344,
+      288,
+      366,
+      310
+    ]
+  },
+  {
+    "row": 5,
+    "col": 4,
+    "detected": true,
+    "cell_xyxy": [
+      368,
+      277,
+      407,
+      315
+    ],
+    "crop_xyxy": [
+      385,
+      288,
+      405,
+      308
+    ]
+  },
+  {
+    "row": 5,
+    "col": 5,
+    "detected": true,
+    "cell_xyxy": [
+      407,
+      277,
+      445,
+      315
+    ],
+    "crop_xyxy": [
+      423,
+      285,
+      445,
+      307
+    ]
+  }
+]
