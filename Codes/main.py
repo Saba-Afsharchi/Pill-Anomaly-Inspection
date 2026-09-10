@@ -293,7 +293,7 @@ def send_bad_pills_to_arduino(ser, results):
         ser.write(b"O\n")
         ser.flush()
 
-        time.sleep(0.5)
+        time.sleep(1)
 
     print("[+] Defective pill extraction cycle complete.\n")
 
