@@ -27,7 +27,7 @@ bool waitingForCamera = false;
 
 // --- پارامترهای شبکه 5x5 قرص‌ها ---
 const int Q11_KEY8_COUNT = 146; // تعداد کلید 8 برای قرص 11
-const int Q11_KEY4_COUNT = 80;  // تعداد کلید 4 برای قرص 11
+const int Q11_KEY4_COUNT = 79;  // تعداد کلید 4 برای قرص 11
 
 const float ROW_STEP_KEY8 = 15.0; // کاهش کلید 8 به ازای هر سطر به پایین
 const float COL_STEP_KEY4 = 15.0; // کاهش کلید 4 به ازای هر ستون به راست

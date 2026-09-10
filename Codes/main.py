@@ -64,7 +64,6 @@ def capture_image_opencv():
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
-    # Warm-up frames for auto-exposure adjustment
     for _ in range(10):
         ret, frame = cap.read()
         time.sleep(0.03)
@@ -105,8 +104,21 @@ def auto_detect_black_plate(image):
     return None
 
 
+def extract_white_pills_mask(cell_bgr):
+    """Isolate bright white objects strictly within the cell bounding box."""
+    gray = cv2.cvtColor(cell_bgr, cv2.COLOR_BGR2GRAY)
+
+    # Adaptive thresholding targeting high illumination (white pills)
+    _, thresh = cv2.threshold(gray, 160, 255, cv2.THRESH_BINARY)
+
+    # Morphological noise removal
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
+    thresh = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel)
+    return thresh
+
+
 def load_and_crop_pills(image_path, output_dir="temp_pills", target_size=128):
-    """Segment individual pill grid cells using adaptive Otsu thresholding."""
+    """Segment grid cells with direct white-object validation to ignore outer wooden edges."""
     os.makedirs(output_dir, exist_ok=True)
     image = cv2.imread(str(image_path))
     if image is None:
@@ -124,8 +136,9 @@ def load_and_crop_pills(image_path, output_dir="temp_pills", target_size=128):
         right = int(SHEET_CELL_ROI[2] * w / rw)
         bottom = int(SHEET_CELL_ROI[3] * h / rh)
 
-    pad_w = int((right - left) * 0.03)
-    pad_h = int((bottom - top) * 0.03)
+    # Inward crop margin (5%) to prevent wooden border contamination on corner cells
+    pad_w = int((right - left) * 0.05)
+    pad_h = int((bottom - top) * 0.05)
     left += pad_w
     top += pad_h
     right -= pad_w
@@ -143,18 +156,14 @@ def load_and_crop_pills(image_path, output_dir="temp_pills", target_size=128):
             y1, y2 = int(ys[r]), int(ys[r + 1])
             cell = image[y1:y2, x1:x2]
 
-            gray = cv2.cvtColor(cell, cv2.COLOR_BGR2GRAY)
-            blurred = cv2.GaussianBlur(gray, (3, 3), 0)
+            # Detect white objects inside current cell
+            white_mask = extract_white_pills_mask(cell)
+            contours, _ = cv2.findContours(white_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-            # Dynamic thresholding for detection of damaged/partial fragments
-            _, thresh = cv2.threshold(blurred, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-            contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-            # Lower threshold limit (0.8%) to catch tiny broken pill pieces
             cell_area = cell.shape[0] * cell.shape[1]
-            min_area = int(cell_area * 0.008)
+            min_pill_area = int(cell_area * 0.015)  # Minimum threshold for pill fragments
 
-            valid_contours = [cnt for cnt in contours if cv2.contourArea(cnt) >= min_area]
+            valid_contours = [cnt for cnt in contours if cv2.contourArea(cnt) >= min_pill_area]
             found = len(valid_contours) > 0
 
             if found:
@@ -162,7 +171,7 @@ def load_and_crop_pills(image_path, output_dir="temp_pills", target_size=128):
                 cx, cy, cw, ch = cv2.boundingRect(main_contour)
 
                 center_x, center_y = cx + cw // 2, cy + ch // 2
-                side = int(max(cw, ch) * 1.75)
+                side = int(max(cw, ch) * 1.6)
 
                 sx, sy = max(0, center_x - side // 2), max(0, center_y - side // 2)
                 tx, ty = min(cell.shape[1], center_x + side // 2), min(cell.shape[0], center_y + side // 2)
@@ -181,9 +190,10 @@ def load_and_crop_pills(image_path, output_dir="temp_pills", target_size=128):
             cv2.imwrite(path, crop)
 
             pills.append({"row": r + 1, "col": c + 1, "path": path, "image": crop, "detected": found})
-            metadata.append({"row": r + 1, "col": c + 1, "detected": found, "cell_xyxy": [x1, y1, x2, y2], "crop_xyxy": box})
+            metadata.append(
+                {"row": r + 1, "col": c + 1, "detected": found, "cell_xyxy": [x1, y1, x2, y2], "crop_xyxy": box})
 
-            color = (0, 255, 0) if found else (255, 0, 0)
+            color = (0, 255, 0) if found else (0, 0, 255)
             cv2.rectangle(debug, (x1, y1), (x2, y2), (150, 100, 0), 1)
             cv2.rectangle(debug, tuple(box[:2]), tuple(box[2:]), color, 1)
 
@@ -192,7 +202,7 @@ def load_and_crop_pills(image_path, output_dir="temp_pills", target_size=128):
             cv2.putText(tile, f"R{r + 1}C{c + 1}", (5, 16), cv2.FONT_HERSHEY_SIMPLEX, 0.45, color, 1)
             tiles.append(tile)
 
-    montage = np.vstack([np.hstack(tiles[i : i + 5]) for i in range(0, 25, 5)])
+    montage = np.vstack([np.hstack(tiles[i: i + 5]) for i in range(0, 25, 5)])
     cv2.imwrite(os.path.join(output_dir, "crop_debug.png"), debug)
     cv2.imwrite(os.path.join(output_dir, "crop_montage.jpg"), montage)
 
@@ -203,11 +213,11 @@ def load_and_crop_pills(image_path, output_dir="temp_pills", target_size=128):
 
 
 def analyze_pill(img):
-    """Perform geometric analysis to verify pill integrity."""
+    """Perform geometric analysis on segmented white pill fragment."""
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    blurred = cv2.GaussianBlur(gray, (5, 5), 0)
 
-    _, thresh = cv2.threshold(blurred, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    # Focus analysis strictly on bright white region
+    _, thresh = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY)
     contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     if not contours:
@@ -219,7 +229,7 @@ def analyze_pill(img):
     valid_contours = []
     for cnt in contours:
         area = cv2.contourArea(cnt)
-        if area > 100:
+        if area > 80:
             M = cv2.moments(cnt)
             if M["m00"] != 0:
                 cx = int(M["m10"] / M["m00"])
@@ -242,9 +252,9 @@ def analyze_pill(img):
     area_ratio = area / (img_h * img_w)
 
     checks = [
-        area_to_circle_ratio >= 0.72,
-        aspect_ratio >= 0.78,
-        area_ratio >= 0.08
+        area_to_circle_ratio >= 0.70,
+        aspect_ratio >= 0.75,
+        area_ratio >= 0.07
     ]
 
     healthy = all(checks)
@@ -271,21 +281,18 @@ def send_bad_pills_to_arduino(ser, results):
         ser.write(f"{pos_code}\n".encode("utf-8"))
         ser.flush()
 
-        # Adjusted positioning delay (4.5s) to ensure arm fully settles before relay triggers
         time.sleep(4.5)
 
         print("[->] Activating vacuum suction (R)...")
         ser.write(b"R\n")
         ser.flush()
 
-        # Extended vacuum hold duration (2.5s) for reliable suction
         time.sleep(2.5)
 
         print("[->] Deactivating vacuum suction (O)...")
         ser.write(b"O\n")
         ser.flush()
 
-        # Transition interval before next step
         time.sleep(0.5)
 
     print("[+] Defective pill extraction cycle complete.\n")
@@ -354,7 +361,7 @@ def run_single_inspection():
         print(f"[!] Serial communication failure: {error}")
         sys.exit(1)
 
-    time.sleep(2)  # Microcontroller boot delay
+    time.sleep(2)
 
     try:
         print("[->] Sending signal 'C' (Move arm to camera frame)...")
